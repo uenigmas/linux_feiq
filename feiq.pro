@@ -6,6 +6,8 @@
 
 QT       += core gui network
 
+QMAKE_LFLAGS += -no-pie
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = feiq
