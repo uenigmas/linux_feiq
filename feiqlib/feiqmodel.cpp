@@ -1,9 +1,9 @@
 #include "feiqmodel.h"
+#include <algorithm>
 #include <functional>
 
 FeiqModel::FeiqModel()
 {
-
 }
 
 void FeiqModel::addFellow(shared_ptr<Fellow> fellow)
@@ -15,7 +15,8 @@ void FeiqModel::addFellow(shared_ptr<Fellow> fellow)
 shared_ptr<Fellow> FeiqModel::getFullInfoOf(shared_ptr<Fellow> fellow)
 {
     lock_guard<mutex> guard(mFellowLock);
-    auto predict = [&fellow](shared_ptr<Fellow> tmp){return fellow->isSame(*tmp);};
+    auto predict = [&fellow](shared_ptr<Fellow> tmp)
+    { return fellow->isSame(*tmp); };
     auto found = std::find_if(mFellows.begin(), mFellows.end(), predict);
     return found == mFellows.end() ? nullptr : *found;
 }
@@ -23,12 +24,13 @@ shared_ptr<Fellow> FeiqModel::getFullInfoOf(shared_ptr<Fellow> fellow)
 shared_ptr<Fellow> FeiqModel::findFirstFellowOf(const string &ip)
 {
     lock_guard<mutex> guard(mFellowLock);
-    auto predict = [&ip](shared_ptr<Fellow> tmp){return tmp->getIp() == ip;};
+    auto predict = [&ip](shared_ptr<Fellow> tmp)
+    { return tmp->getIp() == ip; };
     auto found = std::find_if(mFellows.begin(), mFellows.end(), predict);
     return found == mFellows.end() ? nullptr : *found;
 }
 
-list<shared_ptr<Fellow> > FeiqModel::searchFellow(const string &text)
+list<shared_ptr<Fellow>> FeiqModel::searchFellow(const string &text)
 {
     lock_guard<mutex> guard(mFellowLock);
     list<shared_ptr<Fellow>> fellows;
@@ -40,9 +42,7 @@ list<shared_ptr<Fellow> > FeiqModel::searchFellow(const string &text)
     {
         for (shared_ptr<Fellow> fellow : mFellows)
         {
-            if (fellow->getName().find(text) != string::npos
-                || fellow->getHost().find(text) != string::npos
-                || fellow->getIp().find(text) != string::npos)
+            if (fellow->getName().find(text) != string::npos || fellow->getHost().find(text) != string::npos || fellow->getIp().find(text) != string::npos)
                 fellows.push_back(fellow);
         }
     }
@@ -83,18 +83,18 @@ shared_ptr<FileTask> FeiqModel::addUploadTask(shared_ptr<Fellow> fellow, shared_
     return task;
 }
 
-void FeiqModel::removeFileTask(function<bool (const FileTask&)> predict)
+void FeiqModel::removeFileTask(function<bool(const FileTask &)> predict)
 {
     lock_guard<mutex> g(mFileTaskLock);
-    mFileTasks.remove_if([predict](shared_ptr<FileTask> t){
-        return predict(*t);
-    });
+    mFileTasks.remove_if([predict](shared_ptr<FileTask> t)
+                         { return predict(*t); });
 }
 
 shared_ptr<FileTask> FeiqModel::findTask(IdType packetNo, IdType fileId, FileTaskType type)
 {
     lock_guard<mutex> g(mFileTaskLock);
-    for (auto task : mFileTasks) {
+    for (auto task : mFileTasks)
+    {
         if (task->type() != type)
             continue;
 
@@ -106,7 +106,7 @@ shared_ptr<FileTask> FeiqModel::findTask(IdType packetNo, IdType fileId, FileTas
     return nullptr;
 }
 
-list<shared_ptr<FileTask> > FeiqModel::searchTask(function<bool (const FileTask &)> predict)
+list<shared_ptr<FileTask>> FeiqModel::searchTask(function<bool(const FileTask &)> predict)
 {
     lock_guard<mutex> g(mFileTaskLock);
     list<shared_ptr<FileTask>> allTask;

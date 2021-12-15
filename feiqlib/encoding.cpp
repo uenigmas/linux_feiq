@@ -1,12 +1,13 @@
 #include "encoding.h"
+#include <errno.h>
 #include <iconv.h>
+#include <memory>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <stdio.h>
 
-Encoding* encIn = new Encoding("GBK", "UTF-8");
-Encoding* encOut = new Encoding("UTF-8", "GBK");
+Encoding *encIn = new Encoding("GBK", "UTF-8");
+Encoding *encOut = new Encoding("UTF-8", "GBK");
 
 Encoding::Encoding(const string &fromCharset, const string &toCharset)
 {
@@ -22,7 +23,7 @@ Encoding::~Encoding()
 
 vector<char> Encoding::convert(const vector<char> &str)
 {
-    vector<char> result(str.size()*3);
+    vector<char> result(str.size() * 3);
     auto len = result.size();
     if (convert(str.data(), str.size(), result.data(), &len))
     {
@@ -36,7 +37,7 @@ vector<char> Encoding::convert(const vector<char> &str)
 
 string Encoding::convert(const string &str)
 {
-    auto len = str.length()*3;
+    auto len = str.length() * 3;
     unique_ptr<char[]> buf(new char[len]);
     if (convert(str.data(), str.size(), buf.get(), &len))
     {
@@ -54,10 +55,10 @@ bool Encoding::convert(const char *input, size_t len, char *output, size_t *outL
 
     //copy in str
     size_t inLen = len;
-    auto inBuf = unique_ptr<char[]>(new char[inLen+1]);
-    char* pIn = inBuf.get();
+    auto inBuf = unique_ptr<char[]>(new char[inLen + 1]);
+    char *pIn = inBuf.get();
     memcpy(pIn, input, inLen);
-    pIn[inLen]=0;
+    pIn[inLen] = 0;
 
     //do convert
     int ret = iconv(mIconv, &pIn, &inLen, &output, outLen);

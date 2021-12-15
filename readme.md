@@ -1,8 +1,10 @@
-**由于工作原因，本人已很少使用feiq，该项目暂时挂起，如有发现bug，欢迎下载源码修正后提交pull request**
+**fork from https://github.com/compilelife/feiq.git**
 
 # 概览
 
-这是基于qt实现的mac版飞秋。
+这是基于qt实现的Linux版飞秋
+
+原为基于qt实现的mac版飞秋，后修改了mac的系统调用，使其支持Linux。
 
 mac下的“飞秋”大多数只是飞鸽传书协议，而且未发现令人满意的开源项目，所以基于c++与qt实现了基础的飞秋协议。
 

@@ -1,6 +1,7 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include <memory>
 #include <ostream>
 using namespace std;
 
@@ -10,7 +11,7 @@ class SendProtocol
 {
 public:
     virtual int cmdId() = 0;
-    virtual void write(ostream& os) = 0;
+    virtual void write(ostream &os) = 0;
 };
 
 class RecvProtocol

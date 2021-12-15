@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = feiq
 TEMPLATE = app
 
-LIBS += -liconv -lsqlite3
+LIBS += -lsqlite3
 
 mac{
     QT += macextras

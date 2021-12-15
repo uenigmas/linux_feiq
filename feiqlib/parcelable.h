@@ -2,6 +2,8 @@
 #define PARCELABLE_H
 
 #include <iostream>
+#include <memory.h>
+#include <memory>
 #include <sstream>
 #include <vector>
 
@@ -18,74 +20,80 @@ private:
             this->size = size;
         }
 
-        Head(istream& ss)
+        Head(istream &ss)
         {
             read(ss);
         }
 
         int size;
 
-        void myWriteInt(ostream& os, int val)
+        void myWriteInt(ostream &os, int val)
         {
             char buf[9] = {0};
             snprintf(buf, sizeof(buf), "%08d", val);
-            os<<buf;
+            os << buf;
         }
 
-        int myReadInt(istream& is)
+        int myReadInt(istream &is)
         {
             char buf[9] = {0};
-            is.read(buf, sizeof(buf)-1);
+            is.read(buf, sizeof(buf) - 1);
             return stoi(buf);
         }
 
-        void write(ostream& os){
+        void write(ostream &os)
+        {
             myWriteInt(os, size);
         }
 
-        void read(istream& is){
+        void read(istream &is)
+        {
             size = myReadInt(is);
         }
     };
 
 public:
-    template<typename T>
-    void write(const T& val){
+    template <typename T>
+    void write(const T &val)
+    {
         writePtr(&val, 1);
     }
 
-    template<typename T>
-    void read(T& val){
+    template <typename T>
+    void read(T &val)
+    {
         readPtr(&val);
     }
 
-    template<typename T>
-    void writePtr(const T* ptr, int n){
+    template <typename T>
+    void writePtr(const T *ptr, int n)
+    {
         Head head{(int)(n * sizeof(T))};
         head.write(ss);
-        ss.write((const char*)ptr, head.size);
+        ss.write((const char *)ptr, head.size);
     }
 
-    template<typename T>
-    void readPtr(T* ptr){
+    template <typename T>
+    void readPtr(T *ptr)
+    {
         Head head(ss);
         unique_ptr<char[]> buf(new char[head.size]);
         ss.read(buf.get(), head.size);
         memcpy(ptr, buf.get(), head.size);
     }
 
-    void writeString(const string& val)
+    void writeString(const string &val)
     {
         writePtr(val.c_str(), val.length());
     }
 
-    void readString(string& val)
+    void readString(string &val)
     {
         auto size = nextSize();
-        unique_ptr<char[]> buf(new char[size+1]);
+        unique_ptr<char[]> buf(new char[size + 1]);
         readPtr(buf.get());
-        buf[size]=0;
-        val=buf.get();
+        buf[size] = 0;
+        val = buf.get();
     }
 
     void resetForRead()
@@ -93,10 +101,10 @@ public:
         ss.seekg(0, ss.beg);
     }
 
-    void fillWith(const void* data, int len)
+    void fillWith(const void *data, int len)
     {
         ss.clear();
-        ss.write(static_cast<const char*>(data), len);
+        ss.write(static_cast<const char *>(data), len);
     }
 
 public:
@@ -138,8 +146,8 @@ private:
 class Parcelable
 {
 public:
-    virtual void writeTo(Parcel& out) const =0;
-    virtual void readFrom(Parcel& in) =0;
+    virtual void writeTo(Parcel &out) const = 0;
+    virtual void readFrom(Parcel &in) = 0;
 };
 
 #endif // PARCELABLE_H
